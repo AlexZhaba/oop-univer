@@ -17,7 +17,6 @@ import { BeverageDecorator } from "./beverage-decorator";
 import { Milk, Mocha, Soy, Whip } from "./custom-beverage-decorators";
 import { FruitFreshOrderTemplate } from "./handlers/fruit-fresh-order-template";
 import { HandleOrderTemplate } from "./handlers/handle-order-template";
-import { NonAlcoholicCocktailComponentsFabric } from "./fabrics/fabrics";
 import { NonAlcoholicCocktailOrderTemplate } from "./handlers/non-alcoholic-cocktail-template";
 import { TeaOrderTemplate } from "./handlers/tea-order-template";
 
