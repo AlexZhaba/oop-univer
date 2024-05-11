@@ -1,9 +1,14 @@
 import { Beverage } from "../beverage";
-import { FruitFresh, NonAlcoholicCocktail, Tea } from "./beverages";
+import {
+  BeverageWithIngridients,
+  FruitFresh,
+  NonAlcoholicCocktail,
+  Tea,
+} from "./beverages";
 export type BeverageType = "tea" | "cocktail" | "fresh";
 
 export abstract class VolumeFactory {
-  public abstract createBeverage(type: BeverageType): Beverage;
+  public abstract createBeverage(type: BeverageType): BeverageWithIngridients;
 }
 
 export class SmallVolumeFactory extends VolumeFactory {

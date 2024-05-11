@@ -5,19 +5,31 @@ import {
   NonAlcoholicCocktailComponentsFabric,
   TeaComponentsFabric,
 } from "./fabrics";
+import { Ingridient } from "./ingridients";
 
-abstract class BeverageWithFabric extends Beverage {
+export interface BeverageWithIngridients extends Beverage {
+  getIngridients(): Ingridient[];
+}
+
+abstract class BeverageWithFabric
+  extends Beverage
+  implements BeverageWithIngridients
+{
   public abstract ingridientFabric: BeverageComponentsFabric;
   constructor(public volume: number) {
     super();
   }
 
+  public getIngridients(): Ingridient[] {
+    return [
+      this.ingridientFabric.getBasement(),
+      this.ingridientFabric.getMainIngridient(),
+      this.ingridientFabric.getTopper(),
+    ];
+  }
+
   public getPureCost() {
-    return (
-      this.ingridientFabric.getBasement().getCost() +
-      this.ingridientFabric.getMainIngridient().getCost() +
-      this.ingridientFabric.getTopper().getCost()
-    );
+    return this.getIngridients().reduce((acc, val) => val.getCost() + acc, 0);
   }
 
   public getCost(): number {

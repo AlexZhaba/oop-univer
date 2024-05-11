@@ -1,16 +1,25 @@
 import {
+  BeverageWithIngridients,
+  FruitFresh,
+  NonAlcoholicCocktail,
+} from "./fabrics/beverages";
+import {
   BeverageType,
   LargeVolumeFactory,
   MediumVolumeFactory,
   SmallVolumeFactory,
   VolumeFactory,
 } from "./fabrics/volumes-factory";
-import { createInterface } from "node:readline/promises";
+import { Interface, createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
-import { Beverage } from "./beverage";
 import { BeverageDecorator } from "./beverage-decorator";
 import { Milk, Mocha, Soy, Whip } from "./custom-beverage-decorators";
+import { FruitFreshOrderTemplate } from "./handlers/fruit-fresh-order-template";
+import { HandleOrderTemplate } from "./handlers/handle-order-template";
+import { NonAlcoholicCocktailComponentsFabric } from "./fabrics/fabrics";
+import { NonAlcoholicCocktailOrderTemplate } from "./handlers/non-alcoholic-cocktail-template";
+import { TeaOrderTemplate } from "./handlers/tea-order-template";
 
 const volumeFactoryMap: Record<string, new () => VolumeFactory> = {
   1: SmallVolumeFactory,
@@ -20,12 +29,24 @@ const volumeFactoryMap: Record<string, new () => VolumeFactory> = {
 
 const addonsByCode: Record<
   string,
-  new (beverage: Beverage) => BeverageDecorator
+  new (beverage: BeverageWithIngridients) => BeverageDecorator
 > = {
   1: Milk,
   2: Mocha,
   3: Soy,
   4: Whip,
+};
+
+export const getOrderTemplate = (
+  beverage: BeverageWithIngridients,
+  reader: Interface
+): HandleOrderTemplate => {
+  if (beverage instanceof FruitFresh) {
+    return new FruitFreshOrderTemplate(beverage, reader);
+  } else if (beverage instanceof NonAlcoholicCocktail) {
+    return new NonAlcoholicCocktailOrderTemplate(beverage, reader);
+  }
+  return new TeaOrderTemplate(beverage, reader);
 };
 
 const main = async () => {
@@ -72,6 +93,10 @@ const main = async () => {
   }
 
   console.log(`${beverage.getDescription()}: ${beverage.getCost()}$`);
+
+  const template = getOrderTemplate(beverage, reader);
+
+  await template.handle();
 
   reader.close();
 };
